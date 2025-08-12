@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NSO Dataset Platform — MVP Flow & Future Scope</title>
+<style>
+  :root{
+    --bg1: #f9f9f9;
+    --bg2: #eaf6f2;
+    --card-shadow: 0 6px 20px rgba(13,40,70,0.06);
+    --muted: #676e75;
+    --radius: 12px;
+  }
+
+  body {
+    font-family: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    margin: 0;
+    padding: 26px;
+    color: #222;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    letter-spacing: -0.2px;
+    color: #16325c;
+  }
+  header p {
+    margin: 6px 0 0 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .board {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .lane {
+    flex: 1;
+    min-width: 280px;
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(16,24,40,0.04);
+  }
+
+  .lane h3 {
+    margin: 0 0 14px 0;
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .user h3 { background: linear-gradient(90deg,#7d5ce6,#9c6ade); }
+  .analyst h3 { background: linear-gradient(90deg,#1e88e5,#2196f3); }
+  .nso h3 { background: linear-gradient(90deg,#ff9800,#ffb74d); }
+
+  /* Step card */
+  .step {
+    background: #fbfdff;
+    border-left: 6px solid transparent;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(12,32,64,0.04);
+    transition: transform .14s ease, background-color .14s ease, box-shadow .14s;
+    cursor: pointer;
+    position: relative;
+    display: block;
+    outline: none;
+  }
+  .step:focus { box-shadow: 0 6px 18px rgba(16,40,80,0.12); transform: translateY(-2px); }
+  .step:hover { transform: translateY(-2px); background: #f5fbff; }
+  .step .meta {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .step .title {
+    font-weight:600;
+    color:#123;
+    font-size:0.98rem;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .hint { font-size:0.78rem; color: #8a8f96; margin-top:6px; }
+
+  /* lane-specific border accents */
+  .user .step { border-color: #9c6ade; }
+  .analyst .step { border-color: #2196f3; }
+  .nso .step { border-color: #ff9800; }
+
+  /* rotating arrow */
+  .dropdown-icon {
+    width:18px; height:18px; display:inline-block; flex:0 0 18px;
+    transition: transform .18s ease;
+    opacity: 0.9;
+  }
+  .step.open .dropdown-icon { transform: rotate(90deg); }
+
+  .details {
+    display:none;
+    margin-top:10px;
+    color: var(--muted);
+    font-size:0.88rem;
+    line-height:1.45;
+    background: linear-gradient(180deg, rgba(0,0,0,0.01), rgba(0,0,0,0.00));
+    padding-left:6px;
+  }
+  .step.open .details { display:block; animation: fadeIn .22s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Future scope panel (full width) */
+  .future-scope {
+    background: linear-gradient(90deg,#f7fff7,#f0fff4);
+    border: 1px dashed rgba(34,160,90,0.16);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 6px 22px rgba(7,40,20,0.02);
+    margin-top: 6px;
+  }
+  .future-scope h3 {
+    background: linear-gradient(90deg,#00bfa6,#00d1b2);
+    color: white;
+    margin-bottom: 12px;
+  }
+  .future-steps {
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .future-card {
+    flex: 1 1 300px;
+    min-width: 260px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    border-left: 6px solid rgba(0,191,166,0.6);
+  }
+
+  .badge {
+    font-size:0.72rem;
+    background: rgba(0,191,166,0.12);
+    color:#007b61;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight:600;
+    margin-left:8px;
+  }
+
+  /* small screens */
+  @media (max-width:900px){
+    .board{ flex-direction:column; }
+    .future-steps{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>NSO Dataset Platform — MVP Flow & Future Scope</h1>
+  <p>Clear, demo-ready MVP flow (Anonymized + Request Sensitive Access) — and planned enhancements listed below.</p>
+</header>
+
+<section class="board" aria-label="Process lanes">
+  <!-- Normal Users -->
+  <div class="lane user" aria-labelledby="user-lane">
+    <h3 id="user-lane">Normal Users</h3>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">
+          Explainable AI Assistant
+        </div>
+        <!-- right-pointing triangle SVG -->
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#55606a"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Guides users with plain-language explanations of privacy modes, what is shared, and expected use of their data.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Privacy Awareness Quiz</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#55606a"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">A short gamified quiz that educates the participant and improves consent quality before survey submission.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Privacy Mode Selection</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#55606a"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Users choose Public / Research-only / Confidential handling; UI shows quick risk & benefit preview for each choice.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Secure Upload to NSO</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#55606a"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Encrypted transport and storage; metadata-only previews shown to analysts unless approved.</div>
+    </div>
+  </div>
+
+  <!-- Analysts -->
+  <div class="lane analyst" aria-labelledby="analyst-lane">
+    <h3 id="analyst-lane">Analysts</h3>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Browse Datasets</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Search, filter and preview dataset metadata, sample aggregates, and quality scores before requesting access.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">AI Bot Q&A</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Ask plain-language questions about datasets; get explainable answers with citations to metadata and privacy scores.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Utility & Privacy Dashboard</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Compare k-anonymity, l-diversity, DP epsilon, utility metrics and bias checks in an easy visual panel.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Dataset Comparison Tool</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Side-by-side utility vs privacy trade-off visualiser — helps pick the best dataset for the research question.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Request Sensitive Access</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Submit justification + research plan; multi-stage approval, identity verification and audit trail for each request.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Tiered Access</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Default: anonymized downloads. For sensitive needs: synthetic twin / restricted compute & monitored sessions (future expansions).</div>
+    </div>
+  </div>
+
+  <!-- NSO -->
+  <div class="lane nso" aria-labelledby="nso-lane">
+    <h3 id="nso-lane">NSO</h3>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Data Collection & Storage</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Secure, access-controlled storage with robust metadata cataloguing and versioning.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Privacy Processing</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Centralized anonymization pipeline using DP/SDG + heuristic checks; preview of before/after privacy metrics.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Risk Scoring & Compliance</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Automated risk scoring, jurisdiction flags (GDPR/HIPAA/CCPA reminders) and audit logs for every access event.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Synthetic Twin Generation</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Generate synthetic datasets for analyses where raw data risks are unacceptable — released with quality & utility scores.</div>
+    </div>
+
+    <div class="step" role="button" tabindex="0" aria-expanded="false">
+      <div class="meta">
+        <div class="title">Access Decision</div>
+        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
+        </svg>
+      </div>
+      <div class="hint">Click to expand</div>
+      <div class="details">Final approval (or denial) for sensitive requests; outcome and reasons logged for transparency and audit.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Future scope band -->
+<section class="future-scope" aria-label="Future scope">
+  <h3>Future Scope — Planned Enhancements (non-MVP)</h3>
+  <div class="future-steps">
+    <div class="future-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-weight:700">Secure Sandbox (Planned)</div>
+        <span class="badge">Core Future</span>
+      </div>
+      <div class="hint" style="margin-top:8px">Click to expand</div>
+
+      <div class="step" role="button" tabindex="0" aria-expanded="false" style="margin-top:10px; border-left-color: rgba(0,191,166,0.6);">
+        <div class="meta">
+          <div class="title">Secure Sandbox (NSO-hosted)</div>
+          <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7V5z" fill="#007b61"></path></svg>
+        </div>
+        <div class="details">A fully isolated compute environment hosted by NSO for in-place analysis when raw/staged access is required. <strong>Note:</strong> heavy infra cost — marked as future scope.</div>
+      </div>
+    </div>
+
+    <div class="future-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-weight:700">Federated Access</div>
+        <span class="badge">Planned</span>
+      </div>
+      <div class="hint" style="margin-top:8px">Click to expand</div>
+
+      <div class="step" role="button" tabindex="0" aria-expanded="false" style="margin-top:10px; border-left-color: rgba(0,191,166,0.45);">
+        <div class="meta">
+          <div class="title">Federated Data Queries</div>
+          <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7V5z" fill="#007b61"></path></svg>
+        </div>
+        <div class="details">Query data where it resides (on-prem nodes) to avoid centralizing raw data. Requires standardization and compute at data-holding sites.</div>
+      </div>
+    </div>
+
+    <div class="future-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-weight:700">On-prem AI Nodes</div>
+        <span class="badge">Optional</span>
+      </div>
+      <div class="hint" style="margin-top:8px">Click to expand</div>
+
+      <div class="step" role="button" tabindex="0" aria-expanded="false" style="margin-top:10px; border-left-color: rgba(0,191,166,0.35);">
+        <div class="meta">
+          <div class="title">On-prem AI Processing</div>
+          <svg class="dropdown-icon" viewBox="0 0 24 24"><path d="M8 5l8 7-8 7V5z" fill="#007b61"></path></svg>
+        </div>
+        <div class="details">Deploy lightweight AI modules to data-owning sites to run agreed transforms and return safe aggregates or synthetic outputs.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Toggle logic + keyboard support for accessibility
+  const steps = Array.from(document.querySelectorAll('.step'));
+  steps.forEach(step => {
+    const toggle = () => {
+      const isOpen = step.classList.toggle('open');
+      step.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    step.addEventListener('click', (e) => {
+      // allow clicks inside details area to also close/open
+      // but avoid interfering with nested interaction
+      toggle();
+    });
+
+    step.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+
+  // Optional: expand first key items (uncomment if you want initial open state)
+  // document.querySelectorAll('.step')[0].classList.add('open');
+</script>
+
+</body>
+</html>
