@@ -31,3 +31,6 @@ synthetic_data = dp_synthetic_binary(original_data, epsilon=0.8)
 
 # 4. Save or view the result
 synthetic_data.to_csv("synthetic_transactions.csv", index=False)
+
+print(original_data.describe())
+print(synthetic_data.describe())
