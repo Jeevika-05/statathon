@@ -63,9 +63,9 @@
     font-size: 1rem;
     text-align: center;
   }
-  .user h3 { background: linear-gradient(90deg,#7d5ce6,#9c6ade); }
-  .analyst h3 { background: linear-gradient(90deg,#1e88e5,#2196f3); }
-  .nso h3 { background: linear-gradient(90deg,#ff9800,#ffb74d); }
+  .civic h3 { background: linear-gradient(90deg,#7d5ce6,#9c6ade); }
+  .research h3 { background: linear-gradient(90deg,#1e88e5,#2196f3); }
+  .admin h3 { background: linear-gradient(90deg,#ff9800,#ffb74d); }
 
   /* Step card */
   .step {
@@ -100,9 +100,9 @@
   .hint { font-size:0.78rem; color: #8a8f96; margin-top:6px; }
 
   /* lane-specific border accents */
-  .user .step { border-color: #9c6ade; }
-  .analyst .step { border-color: #2196f3; }
-  .nso .step { border-color: #ff9800; }
+  .civic .step { border-color: #9c6ade; }
+  .research .step { border-color: #2196f3; }
+  .admin .step { border-color: #ff9800; }
 
   /* rotating arrow */
   .dropdown-icon {
@@ -177,18 +177,18 @@
 
 <header>
   <h1>NSO Dataset Platform — MVP Flow & Future Scope</h1>
-  <p>Clear, demo-ready MVP flow (Anonymized + Request Sensitive Access) — and planned enhancements listed below.</p>
+  
 </header>
 
 <section class="board" aria-label="Process lanes">
-  <!-- Normal Users -->
-  <div class="lane user" aria-labelledby="user-lane">
-    <h3 id="user-lane">Normal Users</h3>
+  <!-- Civic -->
+  <div class="lane civic" aria-labelledby="civic-lane">
+    <h3 id="civic-lane">Civic</h3>
 
     <div class="step" role="button" tabindex="0" aria-expanded="false">
       <div class="meta">
         <div class="title">
-          Explainable AI Assistant
+          AI Bot
         </div>
         <!-- right-pointing triangle SVG -->
         <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -233,9 +233,9 @@
     </div>
   </div>
 
-  <!-- Analysts -->
-  <div class="lane analyst" aria-labelledby="analyst-lane">
-    <h3 id="analyst-lane">Analysts</h3>
+  <!-- Research -->
+  <div class="lane research" aria-labelledby="research-lane">
+    <h3 id="research-lane">Research</h3>
 
     <div class="step" role="button" tabindex="0" aria-expanded="false">
       <div class="meta">
@@ -281,32 +281,12 @@
       <div class="details">Side-by-side utility vs privacy trade-off visualiser — helps pick the best dataset for the research question.</div>
     </div>
 
-    <div class="step" role="button" tabindex="0" aria-expanded="false">
-      <div class="meta">
-        <div class="title">Request Sensitive Access</div>
-        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
-        </svg>
-      </div>
-      <div class="hint">Click to expand</div>
-      <div class="details">Submit justification + research plan; multi-stage approval, identity verification and audit trail for each request.</div>
-    </div>
-
-    <div class="step" role="button" tabindex="0" aria-expanded="false">
-      <div class="meta">
-        <div class="title">Tiered Access</div>
-        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 5l8 7-8 7V5z" fill="#2a3f57"></path>
-        </svg>
-      </div>
-      <div class="hint">Click to expand</div>
-      <div class="details">Default: anonymized downloads. For sensitive needs: synthetic twin / restricted compute & monitored sessions (future expansions).</div>
-    </div>
+    <!-- Removed: Request Sensitive Access & Tiered Access -->
   </div>
 
-  <!-- NSO -->
-  <div class="lane nso" aria-labelledby="nso-lane">
-    <h3 id="nso-lane">NSO</h3>
+  <!-- Admin -->
+  <div class="lane admin" aria-labelledby="admin-lane">
+    <h3 id="admin-lane">Admin</h3>
 
     <div class="step" role="button" tabindex="0" aria-expanded="false">
       <div class="meta">
@@ -343,17 +323,6 @@
 
     <div class="step" role="button" tabindex="0" aria-expanded="false">
       <div class="meta">
-        <div class="title">Synthetic Twin Generation</div>
-        <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
-        </svg>
-      </div>
-      <div class="hint">Click to expand</div>
-      <div class="details">Generate synthetic datasets for analyses where raw data risks are unacceptable — released with quality & utility scores.</div>
-    </div>
-
-    <div class="step" role="button" tabindex="0" aria-expanded="false">
-      <div class="meta">
         <div class="title">Access Decision</div>
         <svg class="dropdown-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M8 5l8 7-8 7V5z" fill="#4b2f00"></path>
@@ -362,6 +331,8 @@
       <div class="hint">Click to expand</div>
       <div class="details">Final approval (or denial) for sensitive requests; outcome and reasons logged for transparency and audit.</div>
     </div>
+
+    <!-- Removed: Synthetic Twin Generation -->
   </div>
 </section>
 
