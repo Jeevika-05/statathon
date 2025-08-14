@@ -27,10 +27,7 @@ Demonstrates how a dataset containing quasi-identifiers (like age, gender, and Z
 4. Displays a bar chart comparing re-identified vs. not re-identified records.
 
 **Graph:**  
-[Script 1 Linkage Attack Graph]
-<img width="690" height="540" alt="image" src="https://github.com/user-attachments/assets/8cd6afb8-552d-4fc2-9196-be682249fcc8" />
-
-
+![Script 1 Linkage Attack Graph](https://github.com/user-attachments/assets/8cd6afb8-552d-4fc2-9196-be682249fcc8)
 
 ---
 
@@ -54,7 +51,7 @@ Shows that even after **k-anonymization**, a dataset may still have re-identific
 6. Plots a bar chart showing the number of re-identified vs. non-re-identified records.
 
 **Graph:**  
-<img width="696" height="542" alt="image" src="https://github.com/user-attachments/assets/f7479255-5af5-4183-981b-68d4aff946ba" />
+![Script 2 Linkage Attack Graph](https://github.com/user-attachments/assets/f7479255-5af5-4183-981b-68d4aff946ba)
 
 ---
 
